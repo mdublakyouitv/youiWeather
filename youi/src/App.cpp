@@ -6,6 +6,9 @@
 #include <cxxreact/JSBigString.h>
 #include <glog/logging.h>
 
+#include "components/focusZoneView/FocusZoneManagerModule.h"
+#include "components/focusZoneView/ShadowFocusZoneView.h"
+
 App::App() = default;
 
 App::~App() = default;
@@ -34,7 +37,13 @@ bool App::UserInit()
     std::unique_ptr<JsBundleLoader> pBundleLoader(GetBundler());
 
     PlatformApp::SetJsBundleLoader(std::move(pBundleLoader));
-    return PlatformApp::UserInit();
+
+    auto init = PlatformApp::UserInit();
+
+    GetReactNativeViewController().AddModule<FocusZoneManagerModule>();
+    GetReactNativeViewController().AddViewModule<ShadowFocusZoneView>();
+
+    return init;
 }
 
 bool App::UserStart()
